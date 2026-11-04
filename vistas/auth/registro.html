@@ -7,6 +7,45 @@
     <link rel="stylesheet" href="../../css/estilos.css">
   </head>
   <body>
+    <main class="auth-layout">
+      <section class="tarjeta auth-card" aria-labelledby="registro-title">
+        <p class="eyebrow">Biblioteca Villa</p>
+        <h1 id="registro-title">Crear cuenta</h1>
+        <p class="texto-secundario">Completa tus datos para registrarte como cliente.</p>
+        <p class="mensaje" data-form-message role="alert" hidden></p>
+        <form class="formulario" data-register-form>
+          <div class="formulario-dos-columnas">
+            <label class="campo" for="registro-nombre">
+              Nombre
+              <input id="registro-nombre" name="nombre" autocomplete="given-name" required>
+            </label>
+            <label class="campo" for="registro-apellido">
+              Apellido
+              <input id="registro-apellido" name="apellido" autocomplete="family-name" required>
+            </label>
+          </div>
+          <label class="campo" for="registro-email">
+            Correo electrónico
+            <input id="registro-email" name="email" type="email" autocomplete="email" required>
+          </label>
+          <label class="campo" for="registro-telefono">
+            Teléfono
+            <input id="registro-telefono" name="telefono" type="tel" autocomplete="tel">
+          </label>
+          <label class="campo" for="registro-password">
+            Contraseña
+            <input id="registro-password" name="password" type="password" minlength="8" autocomplete="new-password" required>
+          </label>
+          <label class="campo" for="registro-password-confirmation">
+            Confirmar contraseña
+            <input id="registro-password-confirmation" name="password-confirmation" type="password" minlength="8" autocomplete="new-password" required>
+          </label>
+          <button class="boton" type="submit">Crear cuenta</button>
+        </form>
+        <p class="auth-alternativa">¿Ya tienes cuenta? <a href="./login.html">Inicia sesión</a></p>
+      </section>
+    </main>
     <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="../../js/modules/registro.js"></script>
   </body>
 </html>
