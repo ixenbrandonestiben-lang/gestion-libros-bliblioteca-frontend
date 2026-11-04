@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mi perfil | Biblioteca Villa</title>
+    <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/utils/auth-guard.js" data-required-roles="CLIENTE,CLIENTE_REGULAR,CLIENTE_PREMIUM" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
+  </head>
+  <body>
+    <header class="encabezado" data-app-header></header>
+    <main>
+      <section aria-labelledby="perfil-title">
+        <p class="eyebrow">Área de lector</p>
+        <h1 id="perfil-title">Mi perfil</h1>
+        <p class="texto-secundario">Información de tu cuenta.</p>
+        <p class="catalogo-estado" data-profile-status role="status" aria-live="polite">Cargando perfil...</p>
+        <dl class="tarjeta perfil-datos" data-profile aria-busy="true"></dl>
+      </section>
+    </main>
+    <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="../../js/modules/perfil.js"></script>
+  </body>
+</html>

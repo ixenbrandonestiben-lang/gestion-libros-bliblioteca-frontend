@@ -4,7 +4,46 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Punto de venta | Biblioteca Villa</title>
+    <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/utils/auth-guard.js" data-required-roles="ADMIN,ADMINISTRADOR,BIBLIOTECARIO" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
   </head>
   <body>
+    <header class="encabezado" data-app-header></header>
+    <main>
+      <section aria-labelledby="pos-title">
+        <p class="eyebrow">Caja</p>
+        <h1 id="pos-title">Punto de venta</h1>
+        <p class="texto-secundario">Busca libros, arma el carrito y procesa la venta.</p>
+        <p class="mensaje" data-pos-message role="alert" hidden></p>
+        <div class="pos-layout">
+          <section aria-labelledby="pos-search-title">
+            <h2 id="pos-search-title">Buscar libros</h2>
+            <form class="catalogo-busqueda" data-pos-search role="search">
+              <label class="campo" for="pos-query">
+                Título o ISBN
+                <input id="pos-query" type="search" autocomplete="off" placeholder="Buscar...">
+              </label>
+              <button class="boton boton--secundario" type="submit">Buscar</button>
+            </form>
+            <p class="catalogo-estado" data-pos-search-status role="status" aria-live="polite"></p>
+            <div class="lista-tarjetas" data-pos-books aria-busy="false"></div>
+          </section>
+          <section class="carrito" aria-labelledby="cart-title">
+            <h2 id="cart-title">Carrito</h2>
+            <p class="catalogo-estado" data-cart-empty>Agrega libros para iniciar la venta.</p>
+            <ul class="carrito-lista" data-cart-items></ul>
+            <p class="carrito-total">Total: <strong data-cart-total>Q 0.00</strong></p>
+            <button class="boton" type="button" data-process-sale disabled>Procesar venta</button>
+          </section>
+        </div>
+      </section>
+    </main>
+    <dialog class="dialogo-recibo" data-receipt-dialog aria-labelledby="receipt-title">
+      <h2 id="receipt-title">Venta procesada</h2>
+      <div data-receipt-content></div>
+      <button class="boton" type="button" data-close-receipt>Cerrar</button>
+    </dialog>
+    <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="../../js/modules/pos.js"></script>
   </body>
 </html>
