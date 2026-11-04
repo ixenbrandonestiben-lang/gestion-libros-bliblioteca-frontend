@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Catálogo | Biblioteca Villa</title>
     <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/utils/auth-guard.js" data-required-roles="CLIENTE,CLIENTE_REGULAR,CLIENTE_PREMIUM" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
   </head>
   <body>
-    <header class="encabezado">
-      <a class="marca" href="./catalogo.html">Biblioteca Villa</a>
-    </header>
+    <header class="encabezado" data-app-header></header>
     <main class="catalogo">
       <section aria-labelledby="catalogo-titulo">
         <h1 id="catalogo-titulo">Catálogo de libros</h1>
@@ -34,6 +33,7 @@
           El endpoint del backend aún debe implementarse y probarse.
         </p>
         <p class="catalogo-estado" data-catalog-status role="status" aria-live="polite"></p>
+        <p class="mensaje" data-global-message role="alert" hidden></p>
         <div class="catalogo-libros" data-catalog-results aria-busy="false"></div>
       </section>
     </main>

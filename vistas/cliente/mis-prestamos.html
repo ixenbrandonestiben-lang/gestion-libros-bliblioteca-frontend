@@ -5,8 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mis préstamos | Biblioteca Villa</title>
     <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/utils/auth-guard.js" data-required-roles="CLIENTE,CLIENTE_REGULAR,CLIENTE_PREMIUM" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
   </head>
   <body>
+    <header class="encabezado" data-app-header></header>
+    <main>
+      <section aria-labelledby="prestamos-title">
+        <p class="eyebrow">Área de lector</p>
+        <h1 id="prestamos-title">Mis préstamos</h1>
+        <p class="texto-secundario">Consulta tus préstamos vigentes y el historial de devoluciones.</p>
+        <label class="campo filtro-lista" for="mis-prestamos-filtro">
+          Filtrar por título
+          <input id="mis-prestamos-filtro" type="search" data-loan-filter placeholder="Buscar un libro...">
+        </label>
+        <p class="mensaje" data-global-message role="alert" hidden></p>
+        <p class="catalogo-estado" data-loan-status role="status" aria-live="polite">Cargando tus préstamos...</p>
+        <div class="lista-tarjetas" data-my-loans aria-busy="true"></div>
+      </section>
+    </main>
     <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="../../js/modules/mis-prestamos.js"></script>
   </body>
 </html>
