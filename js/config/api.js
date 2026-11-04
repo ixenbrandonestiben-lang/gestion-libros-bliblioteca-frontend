@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'http://localhost:3000/api/v1';
+export const API_BASE_URL = 'http://localhost:3001/api/v1';
 
 export const API_ENDPOINTS = Object.freeze({
   login: 'auth/login',
@@ -43,10 +43,23 @@ export async function apiFetch(path, options = {}) {
     headers.set('Content-Type', 'application/json');
   }
 
-  const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
-    ...options,
-    headers
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+      ...options,
+      headers
+    });
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw error;
+    }
+
+    throw new ApiError(
+      `No se pudo conectar con la API en ${API_BASE_URL}. Inicia el backend y verifica que CORS permita el origen de esta página.`,
+      0,
+      { cause: error }
+    );
+  }
 
   let data = null;
   const contentType = response.headers.get('content-type') || '';

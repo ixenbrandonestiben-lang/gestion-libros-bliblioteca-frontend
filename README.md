@@ -5,7 +5,7 @@ frameworks, compilador ni dependencias de npm.
 
 ## Ejecutar
 
-1. Configura e inicia el backend Biblioteca Villa API en `http://localhost:3000`
+1. Configura e inicia el backend Biblioteca Villa API en `http://localhost:3001`
    (consulta el README del repositorio backend).
 2. Sirve esta carpeta desde un servidor HTTP local, por ejemplo Live Server en
    VS Code. No abras las páginas con `file://`, porque los módulos ES y las
