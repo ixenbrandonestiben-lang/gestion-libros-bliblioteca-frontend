@@ -5,8 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gestión de préstamos | Biblioteca Villa</title>
     <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/utils/auth-guard.js" data-required-roles="ADMIN,ADMINISTRADOR,BIBLIOTECARIO" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
   </head>
   <body>
+    <header class="encabezado" data-app-header></header>
+    <main>
+      <section aria-labelledby="gestion-title">
+        <p class="eyebrow">Biblioteca</p>
+        <h1 id="gestion-title">Gestión de préstamos</h1>
+        <p class="texto-secundario">Registra préstamos y procesa devoluciones.</p>
+        <p class="mensaje" data-loan-message role="alert" hidden></p>
+      </section>
+
+      <section class="tarjeta seccion-formulario" aria-labelledby="nuevo-prestamo-title">
+        <h2 id="nuevo-prestamo-title">Registrar préstamo</h2>
+        <form class="formulario formulario-dos-columnas" data-create-loan>
+          <label class="campo" for="loan-client-id">
+            ID del cliente
+            <input id="loan-client-id" name="id_cliente" required>
+          </label>
+          <label class="campo" for="loan-book-id">
+            ID del libro
+            <input id="loan-book-id" name="id_libro" required>
+          </label>
+          <label class="campo" for="loan-due-date">
+            Fecha de devolución prevista
+            <input id="loan-due-date" name="fecha_devolucion" type="date" required>
+          </label>
+          <button class="boton" type="submit">Crear préstamo</button>
+        </form>
+      </section>
+
+      <section class="seccion-dashboard" aria-labelledby="loans-title">
+        <h2 id="loans-title">Préstamos registrados</h2>
+        <p class="catalogo-estado" data-admin-loans-status role="status" aria-live="polite">Cargando préstamos...</p>
+        <div class="lista-tarjetas" data-admin-loans aria-busy="true"></div>
+      </section>
+    </main>
     <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="../../js/modules/prestamos.js"></script>
   </body>
 </html>
