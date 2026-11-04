@@ -1,4 +1,5 @@
 import { API_ENDPOINTS, apiFetch } from '../config/api.js';
+import { getRoleHome, getUserFromResponse, saveSession } from '../utils/auth.js';
 import { clearMessage, showMessage } from '../utils/dom.js';
 
 const form = document.querySelector('[data-register-form]');
@@ -22,21 +23,24 @@ form?.addEventListener('submit', async (event) => {
   const submitButton = form.querySelector('[type="submit"]');
   submitButton.disabled = true;
 
+  const telefono = String(formData.get('telefono')).trim();
   const payload = {
+    dpi: String(formData.get('dpi')).trim(),
     nombre: String(formData.get('nombre')).trim(),
     apellido: String(formData.get('apellido')).trim(),
-    email: String(formData.get('email')).trim(),
-    telefono: String(formData.get('telefono')).trim(),
-    password
+    correo: String(formData.get('email')).trim(),
+    ...(telefono ? { telefono } : {}),
+    contrasena: password
   };
 
   try {
-    await apiFetch(API_ENDPOINTS.register, {
+    const response = await apiFetch(API_ENDPOINTS.register, {
       method: 'POST',
       body: JSON.stringify(payload)
     });
-    showMessage(message, 'Registro enviado. Ya puedes iniciar sesión.', 'success');
-    form.reset();
+    const user = getUserFromResponse(response);
+    const session = saveSession(user, response?.data?.token);
+    window.location.assign(getRoleHome(session.role));
   } catch (error) {
     showMessage(message, error.message || 'No se pudo completar el registro.', 'error');
   } finally {

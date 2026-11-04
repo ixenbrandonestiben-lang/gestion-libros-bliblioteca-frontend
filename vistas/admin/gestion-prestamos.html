@@ -22,15 +22,15 @@
         <form class="formulario formulario-dos-columnas" data-create-loan>
           <label class="campo" for="loan-client-id">
             ID del cliente
-            <input id="loan-client-id" name="id_cliente" required>
+            <input id="loan-client-id" name="id_cliente" type="number" min="1" step="1" required>
           </label>
           <label class="campo" for="loan-book-id">
             ID del libro
-            <input id="loan-book-id" name="id_libro" required>
+            <input id="loan-book-id" name="id_libro" type="number" min="1" step="1" required>
           </label>
           <label class="campo" for="loan-due-date">
             Fecha de devolución prevista
-            <input id="loan-due-date" name="fecha_devolucion" type="date" required>
+            <input id="loan-due-date" name="fecha_devolucion_esperada" type="date" required>
           </label>
           <button class="boton" type="submit">Crear préstamo</button>
         </form>

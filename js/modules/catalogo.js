@@ -8,6 +8,7 @@ const status = document.querySelector('[data-catalog-status]');
 
 let debounceTimer;
 let activeRequest;
+let currentQuery = '';
 
 function addDetail(list, label, value) {
   if (value === undefined || value === null || value === '') {
@@ -33,9 +34,9 @@ function createBookCard(book) {
 
   const details = document.createElement('dl');
   details.className = 'libro-detalles';
-  addDetail(details, 'Autor', book.autor);
-  addDetail(details, 'Editorial', book.editorial);
-  addDetail(details, 'Género', book.genero);
+  addDetail(details, 'Autor', book.autor ?? (book.id_autor ? `#${book.id_autor}` : null));
+  addDetail(details, 'Editorial', book.editorial ?? (book.id_editorial ? `#${book.id_editorial}` : null));
+  addDetail(details, 'Género', book.genero ?? (book.id_genero ? `#${book.id_genero}` : null));
   addDetail(details, 'ISBN', book.isbn);
 
   if (details.childElementCount > 0) {
@@ -70,8 +71,12 @@ function createBookCard(book) {
 
 function renderBooks(books) {
   const fragment = document.createDocumentFragment();
+  const query = currentQuery.toLocaleLowerCase('es');
+  const visibleBooks = books.filter((book) => (
+    `${book.titulo ?? ''} ${book.isbn ?? ''} ${book.autor ?? ''}`.toLocaleLowerCase('es').includes(query)
+  ));
 
-  for (const book of books) {
+  for (const book of visibleBooks) {
     if (!book || typeof book !== 'object' || Array.isArray(book)) {
       throw new Error('La API devolvió un registro de libro con formato inválido.');
     }
@@ -80,9 +85,9 @@ function renderBooks(books) {
   }
 
   results.replaceChildren(fragment);
-  status.textContent = books.length === 0
+  status.textContent = visibleBooks.length === 0
     ? 'No se encontraron libros.'
-    : `${books.length} ${books.length === 1 ? 'libro encontrado' : 'libros encontrados'}.`;
+    : `${visibleBooks.length} ${visibleBooks.length === 1 ? 'libro encontrado' : 'libros encontrados'}.`;
 }
 
 function showError(error) {
@@ -90,9 +95,7 @@ function showError(error) {
     return;
   }
 
-  if (error.status === 404) {
-    status.textContent = 'El endpoint de libros aún no está disponible en el backend.';
-  } else if (error instanceof TypeError) {
+  if (error instanceof TypeError) {
     status.textContent = 'No se pudo conectar con la API. Verifica que el backend esté ejecutándose y permita solicitudes desde este origen.';
   } else {
     status.textContent = error.message || 'No se pudo cargar el catálogo.';
@@ -105,15 +108,11 @@ async function loadBooks(query = '') {
   activeRequest?.abort();
   const request = new AbortController();
   activeRequest = request;
+  currentQuery = query.trim();
   results.setAttribute('aria-busy', 'true');
   status.textContent = 'Cargando catálogo...';
 
-  const search = new URLSearchParams();
-  if (query) {
-    search.set('q', query);
-  }
-
-  const endpoint = search.size > 0 ? `libros?${search}` : 'libros';
+  const endpoint = 'libros';
 
   try {
     const response = await apiFetch(endpoint, { signal: request.signal });

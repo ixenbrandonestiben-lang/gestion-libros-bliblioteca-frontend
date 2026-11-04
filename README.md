@@ -5,16 +5,16 @@ frameworks, compilador ni dependencias de npm.
 
 ## Ejecutar
 
-1. Inicia el backend Biblioteca Villa en `http://localhost:3000`.
-2. Sirve esta carpeta desde un servidor HTTP local (por ejemplo, Live Server en
-   VS Code). No abras las páginas con `file://`, porque los módulos ES y las
+1. Configura e inicia el backend Biblioteca Villa API en `http://localhost:3000`
+   (consulta el README del repositorio backend).
+2. Sirve esta carpeta desde un servidor HTTP local, por ejemplo Live Server en
+   VS Code. No abras las páginas con `file://`, porque los módulos ES y las
    solicitudes `fetch` requieren un origen HTTP.
 3. Abre `index.html`.
 
-La URL base de la API está en `js/config/api.js`. El cliente envía cookies con
-`credentials: 'include'`; el backend debe establecer la sesión en una cookie
-`HttpOnly` y habilitar CORS para el origen del frontend cuando se ejecuten en
-puertos diferentes.
+La URL base de la API está en `js/config/api.js`. Si frontend y backend usan
+orígenes distintos, configura `CORS_ORIGINS` en el backend con el origen real
+del frontend.
 
 ## Páginas
 
@@ -23,40 +23,33 @@ puertos diferentes.
 - `vistas/admin/`: resumen, punto de venta y gestión de préstamos.
 - `errors/`: páginas de acceso denegado y página no encontrada.
 
-## Endpoints que espera la interfaz
+## Integración con la API
 
-Los nombres y contratos deben coincidir con los controladores y DTOs del
-backend. La interfaz centraliza las rutas en `js/config/api.js`:
+Las rutas usan el prefijo `/api/v1` y los contratos implementados por el
+backend:
 
 | Método | Ruta | Uso |
 | --- | --- | --- |
-| POST | `/auth/login` | Iniciar sesión; respuesta con usuario y rol, sesión en cookie HttpOnly |
-| POST | `/auth/registro` | Crear cuenta de cliente |
-| POST | `/auth/logout` | Cerrar la sesión del servidor y expirar la cookie |
-| GET | `/auth/perfil` | Consultar el perfil autenticado |
-| GET | `/libros?q=` | Listar y filtrar libros |
-| GET | `/prestamos` | Listar préstamos para personal |
-| GET | `/prestamos/mis-prestamos` | Consultar préstamos del usuario autenticado |
-| POST | `/prestamos` | Registrar préstamo |
-| PATCH | `/prestamos/:id/devolucion` | Registrar devolución y condición del libro |
-| GET | `/ventas` | Consultar ventas para el panel |
-| POST | `/ventas` | Crear venta con artículos `{ id_libro, cantidad }` |
+| POST | `/auth/login` | Iniciar sesión con `{ correo, contrasena }` |
+| POST | `/auth/register` | Crear cliente con DPI, datos personales y contraseña |
+| GET | `/auth/me` | Consultar el perfil autenticado |
+| POST | `/auth/logout` | Confirmar el cierre de sesión |
+| GET | `/libros` | Consultar el catálogo; la búsqueda se aplica en el navegador |
+| GET | `/prestamos?page=1&limit=50` | Listar préstamos propios o globales según el rol |
+| POST | `/prestamos` | Crear préstamo con `id_cliente`, `fecha_devolucion_esperada` y `libros` |
+| POST | `/prestamos/:id/devolucion` | Devolver todos los detalles pendientes con sus estados |
+| GET | `/ventas?page=1&limit=50` | Consultar ventas para el panel |
+| POST | `/ventas` | Crear venta con `id_cliente` e items `{ id_libro, cantidad }` |
 
-El panel deriva los indicadores de las listas de libros, préstamos y ventas. La
-interfaz de devolución calcula el atraso; para estimar la multa, la API debe
-incluir `multa_diaria` o `tarifa_mora_diaria`. El backend siempre debe validar
-existencias, precios, permisos y multas dentro de sus transacciones.
+El servidor calcula precios, existencias, permisos, fechas y multas; la interfaz
+no envía precios ni el identificador del empleado.
 
 ## Sesión y seguridad
 
-El token no se guarda en `localStorage` ni en `sessionStorage`. La interfaz
-espera una cookie HttpOnly del backend; `sessionStorage` conserva únicamente el
-nombre y rol para navegación y presentación. El guard del navegador es solo
-una ayuda de UX y no es una frontera de seguridad: todos los permisos deben
-validarse en el backend.
-
-Al momento de preparar esta interfaz, el repositorio backend expone los
-prefijos de rutas pero sus routers, controladores y DTOs están vacíos. Por eso
-las pantallas manejan los errores de API sin datos de muestra; las operaciones
-reales requieren implementar y probar esos endpoints, alinear los contratos y
-configurar CORS/cookies en el backend.
+La API devuelve un JWT Bearer válido por ocho horas. Para mantener la sesión
+entre páginas, la interfaz guarda el token junto con los datos básicos del
+usuario en `sessionStorage` y lo envía en el encabezado `Authorization`. Se
+elimina al cerrar sesión. No se guarda en `localStorage`; el almacenamiento del
+navegador sigue siendo accesible a JavaScript, por lo que el guard del frontend
+es solo una ayuda de navegación. La autorización efectiva siempre corresponde
+al backend.

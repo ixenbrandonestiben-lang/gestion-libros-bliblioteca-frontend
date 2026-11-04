@@ -9,6 +9,7 @@ const cartList = document.querySelector('[data-cart-items]');
 const cartTotal = document.querySelector('[data-cart-total]');
 const cartEmpty = document.querySelector('[data-cart-empty]');
 const processButton = document.querySelector('[data-process-sale]');
+const saleClientInput = document.querySelector('[data-sale-client]');
 const message = document.querySelector('[data-pos-message]');
 const receiptDialog = document.querySelector('[data-receipt-dialog]');
 const receiptContent = document.querySelector('[data-receipt-content]');
@@ -17,6 +18,7 @@ const cart = new Map();
 let books = [];
 let searchTimer;
 let activeSearch;
+let currentQuery = '';
 
 function getBookId(book) {
   return book.id_libro ?? book.id ?? book.libro_id;
@@ -33,8 +35,12 @@ function formatMoney(value) {
 
 function renderBooks() {
   const fragment = document.createDocumentFragment();
+  const query = currentQuery.toLocaleLowerCase('es');
+  const visibleBooks = books.filter((book) => (
+    `${book.titulo ?? ''} ${book.isbn ?? ''}`.toLocaleLowerCase('es').includes(query)
+  ));
 
-  for (const book of books) {
+  for (const book of visibleBooks) {
     const card = createElement('article', 'tarjeta pos-libro');
     const id = getBookId(book);
     const price = getBookPrice(book);
@@ -56,8 +62,8 @@ function renderBooks() {
   }
 
   bookResults.replaceChildren(fragment);
-  searchStatus.textContent = books.length
-    ? `${books.length} ${books.length === 1 ? 'libro encontrado' : 'libros encontrados'}.`
+  searchStatus.textContent = visibleBooks.length
+    ? `${visibleBooks.length} ${visibleBooks.length === 1 ? 'libro encontrado' : 'libros encontrados'}.`
     : 'No se encontraron libros.';
   bookResults.setAttribute('aria-busy', 'false');
 }
@@ -66,6 +72,7 @@ async function searchBooks(query = '') {
   activeSearch?.abort();
   const request = new AbortController();
   activeSearch = request;
+  currentQuery = query.trim();
   bookResults.setAttribute('aria-busy', 'true');
   searchStatus.textContent = 'Buscando libros...';
 
@@ -89,9 +96,7 @@ async function searchBooks(query = '') {
     }
     bookResults.replaceChildren();
     bookResults.setAttribute('aria-busy', 'false');
-    searchStatus.textContent = error.status === 404
-      ? 'El endpoint de libros aún no está disponible en el backend.'
-      : error.message || 'No se pudieron consultar los libros.';
+    searchStatus.textContent = error.message || 'No se pudieron consultar los libros.';
   }
 }
 
@@ -128,7 +133,7 @@ function renderCart() {
   cartList.replaceChildren(fragment);
   cartTotal.textContent = formatMoney(total);
   cartEmpty.hidden = cart.size > 0;
-  processButton.disabled = cart.size === 0;
+  processButton.disabled = cart.size === 0 || !saleClientInput?.checkValidity();
 }
 
 function addToCart(bookId) {
@@ -167,11 +172,23 @@ function renderReceipt(items, total, response) {
   }
 
   const lines = document.createElement('ul');
-  for (const item of items) {
-    lines.append(createElement('li', '', `${item.title} × ${item.quantity} — ${formatMoney(item.price * item.quantity)}`));
+  const receiptItems = Array.isArray(sale?.detalles)
+    ? sale.detalles.map((detail) => ({
+      title: detail.titulo,
+      quantity: detail.cantidad,
+      subtotal: Number(detail.subtotal)
+    }))
+    : items.map((item) => ({
+      title: item.title,
+      quantity: item.quantity,
+      subtotal: item.price * item.quantity
+    }));
+  for (const item of receiptItems) {
+    lines.append(createElement('li', '', `${item.title} × ${item.quantity} — ${formatMoney(item.subtotal)}`));
   }
-  fragment.append(lines, createElement('p', 'recibo-total', `Total estimado: ${formatMoney(total)}`));
-  fragment.append(createElement('p', 'texto-secundario', 'El total final debe ser confirmado por el backend.'));
+  const finalTotal = Number(sale?.total);
+  const displayTotal = Number.isFinite(finalTotal) ? finalTotal : total;
+  fragment.append(lines, createElement('p', 'recibo-total', `Total: ${formatMoney(displayTotal)}`));
   receiptContent.replaceChildren(fragment);
   receiptDialog.showModal();
 }
@@ -222,6 +239,10 @@ cartList?.addEventListener('change', (event) => {
 });
 
 processButton?.addEventListener('click', async () => {
+  if (!saleClientInput.reportValidity()) {
+    return;
+  }
+
   const items = [...cart.values()].map((item) => ({ ...item }));
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   processButton.disabled = true;
@@ -231,6 +252,7 @@ processButton?.addEventListener('click', async () => {
     const response = await apiFetch(API_ENDPOINTS.sales, {
       method: 'POST',
       body: JSON.stringify({
+        id_cliente: Number(saleClientInput.value),
         items: items.map((item) => ({ id_libro: item.id, cantidad: item.quantity }))
       })
     });
@@ -240,10 +262,11 @@ processButton?.addEventListener('click', async () => {
   } catch (error) {
     showMessage(message, error.message || 'No se pudo procesar la venta.', 'error');
   } finally {
-    processButton.disabled = cart.size === 0;
+    renderCart();
   }
 });
 
+saleClientInput?.addEventListener('input', renderCart);
 document.querySelector('[data-close-receipt]')?.addEventListener('click', () => receiptDialog.close());
 
 renderCart();

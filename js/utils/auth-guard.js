@@ -20,7 +20,7 @@
     sessionStorage.removeItem(sessionKey);
   }
 
-  if (!session?.role) {
+  if (!session?.role || !session?.token) {
     window.location.replace(loginUrl);
     return;
   }

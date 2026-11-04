@@ -9,7 +9,7 @@ function renderProfile(response) {
   const fields = [
     ['Nombre', user.nombre ?? user.name ?? user.nombres],
     ['Apellido', user.apellido ?? user.apellidos],
-    ['Correo electrónico', user.email],
+    ['Correo electrónico', user.correo ?? user.email],
     ['Teléfono', user.telefono ?? user.phone],
     ['Tipo de cuenta', user.tipo_cliente ?? user.rol ?? user.role]
   ];

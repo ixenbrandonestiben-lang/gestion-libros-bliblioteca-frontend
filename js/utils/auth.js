@@ -25,16 +25,20 @@ export function getSession() {
   }
 }
 
-export function saveSession(user) {
-  if (!user || typeof user !== 'object') {
-    throw new Error('La respuesta de autenticación no contiene un usuario válido.');
+export function saveSession(user, token) {
+  if (!user || typeof user !== 'object' || typeof token !== 'string' || !token) {
+    throw new Error('La respuesta de autenticación no contiene una sesión válida.');
   }
 
   const session = {
     id: user.id ?? user.id_cliente ?? null,
-    name: user.nombre ?? user.name ?? user.nombres ?? user.email ?? 'Usuario',
-    email: user.email ?? '',
-    role: normalizeRole(user.rol ?? user.role ?? user.tipo_usuario)
+    name: [user.nombre, user.apellido].filter(Boolean).join(' ')
+      || user.name
+      || user.correo
+      || 'Usuario',
+    email: user.correo ?? user.email ?? '',
+    role: normalizeRole(user.rol ?? user.role ?? user.tipo_usuario),
+    token
   };
 
   if (!session.role) {
@@ -51,8 +55,8 @@ export async function endSession() {
 }
 
 export function getUserFromResponse(response) {
-  const payload = response?.usuario ?? response?.user ?? response?.data ?? response;
-  return payload?.usuario ?? payload?.user ?? payload;
+  const payload = response?.data ?? response;
+  return payload?.user ?? payload?.usuario ?? response?.usuario ?? response?.user ?? payload;
 }
 
 export function getRoleHome(role) {

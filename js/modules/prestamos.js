@@ -7,31 +7,6 @@ const status = document.querySelector('[data-admin-loans-status]');
 const message = document.querySelector('[data-loan-message]');
 let loans = [];
 
-function getOverdueDays(dueDate) {
-  if (!dueDate) {
-    return 0;
-  }
-
-  const due = new Date(`${String(dueDate).slice(0, 10)}T00:00:00`);
-  if (Number.isNaN(due.getTime())) {
-    return 0;
-  }
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return Math.max(0, Math.floor((today - due) / 86_400_000));
-}
-
-function estimateFine(loan) {
-  const days = getOverdueDays(loan.fecha_devolucion ?? loan.fecha_vencimiento);
-  const rawRate = loan.multa_diaria ?? loan.tarifa_mora_diaria;
-  const rate = Number(rawRate);
-  if (rawRate === undefined || rawRate === null || rawRate === '' || !Number.isFinite(rate) || rate < 0) {
-    return { days, amount: null };
-  }
-  return { days, amount: days * rate };
-}
-
 function renderLoans() {
   const fragment = document.createDocumentFragment();
 
@@ -39,40 +14,58 @@ function renderLoans() {
     const loanId = loan.id_prestamo ?? loan.id;
     const card = createElement('article', 'tarjeta prestamo-card');
     card.append(
-      createElement('h3', '', loan.titulo ?? loan.libro?.titulo ?? `Préstamo ${loanId ?? ''}`),
-      createElement('p', 'texto-secundario', `Cliente: ${loan.nombre_cliente ?? loan.cliente?.nombre ?? loan.id_cliente ?? 'No informado'}`)
+      createElement('h3', '', `Préstamo ${loanId ?? ''}`),
+      createElement('p', 'texto-secundario', `Cliente: ${loan.id_cliente ?? 'No informado'}`)
     );
 
     const info = createElement('dl', 'datos-resumen');
-    const { days, amount } = estimateFine(loan);
     const rows = [
       ['ID', loanId ?? 'No informado'],
-      ['Vence', formatDate(loan.fecha_devolucion ?? loan.fecha_vencimiento)],
-      ['Estado', loan.estado ?? 'No informado'],
-      ['Días de atraso', days],
-      ['Multa estimada', amount === null ? 'Tarifa diaria no provista por la API' : `Q ${amount.toFixed(2)}`]
+      ['Vence', formatDate(loan.fecha_devolucion_esperada)],
+      ['Estado', loan.estado_prestamo ?? 'No informado'],
+      ['Multa acumulada', `Q ${Number(loan.multa_acumulada ?? 0).toFixed(2)}`]
     ];
 
     for (const [label, value] of rows) {
       info.append(createElement('dt', '', label), createElement('dd', '', value));
     }
 
-    const controls = createElement('div', 'devolucion-controles');
-    const condition = document.createElement('select');
-    condition.setAttribute('aria-label', `Estado de entrada del libro del préstamo ${loanId}`);
-    condition.dataset.returnCondition = String(loanId ?? '');
-    for (const [value, label] of [['BUENO', 'Buen estado'], ['DANADO', 'Dañado'], ['PERDIDO', 'Perdido']]) {
-      const option = createElement('option', '', label);
-      option.value = value;
-      condition.append(option);
+    const bookList = createElement('ul', 'lista-libros-prestamo');
+    const pendingBooks = (loan.libros ?? []).filter((book) => !book.estado_libro_entrada);
+
+    for (const book of loan.libros ?? []) {
+      const item = createElement('li', '', `Libro #${book.id_libro}`);
+      if (book.estado_libro_entrada) {
+        item.append(createElement('span', 'texto-secundario', ` — ${book.estado_libro_entrada}`));
+      } else {
+        const condition = document.createElement('select');
+        condition.setAttribute('aria-label', `Estado de entrada del libro ${book.id_libro}`);
+        condition.dataset.returnCondition = '';
+        condition.dataset.detailId = String(book.id_detalle_prestamo);
+        for (const [value, label] of [
+          ['NUEVO', 'Nuevo'],
+          ['BUENO', 'Buen estado'],
+          ['DESGASTADO', 'Desgastado'],
+          ['DAÑADO', 'Dañado'],
+          ['PERDIDO', 'Perdido']
+        ]) {
+          const option = createElement('option', '', label);
+          option.value = value;
+          condition.append(option);
+        }
+        item.append(condition);
+      }
+      bookList.append(item);
     }
 
     const returnButton = createElement('button', 'boton boton--secundario', 'Registrar devolución');
     returnButton.type = 'button';
     returnButton.dataset.returnLoan = String(loanId ?? '');
-    returnButton.disabled = loanId === undefined || loanId === null || ['DEVUELTO', 'CERRADO'].includes(String(loan.estado).toUpperCase());
-    controls.append(condition, returnButton);
-    card.append(info, controls);
+    returnButton.disabled = loanId === undefined || loanId === null || pendingBooks.length === 0;
+    card.append(info, bookList);
+    if (pendingBooks.length > 0) {
+      card.append(returnButton);
+    }
     fragment.append(card);
   }
 
@@ -94,9 +87,7 @@ async function loadLoans() {
   } catch (error) {
     list.replaceChildren();
     list.setAttribute('aria-busy', 'false');
-    status.textContent = error.status === 404
-      ? 'El endpoint de préstamos aún no está disponible en el backend.'
-      : error.message || 'No se pudieron cargar los préstamos.';
+    status.textContent = error.message || 'No se pudieron cargar los préstamos.';
   }
 }
 
@@ -115,8 +106,8 @@ form?.addEventListener('submit', async (event) => {
       method: 'POST',
       body: JSON.stringify({
         id_cliente: String(data.get('id_cliente')).trim(),
-        id_libro: String(data.get('id_libro')).trim(),
-        fecha_devolucion: data.get('fecha_devolucion')
+        fecha_devolucion_esperada: data.get('fecha_devolucion_esperada'),
+        libros: [{ id_libro: Number(data.get('id_libro')) }]
       })
     });
     form.reset();
@@ -136,15 +127,19 @@ list?.addEventListener('click', async (event) => {
   }
 
   const loanId = button.dataset.returnLoan;
-  const condition = button.closest('.prestamo-card').querySelector('[data-return-condition]');
+  const booksToReturn = [...button.closest('.prestamo-card').querySelectorAll('[data-return-condition]')]
+    .map((condition) => ({
+      id_detalle_prestamo: Number(condition.dataset.detailId),
+      estado_libro_entrada: condition.value
+    }));
   button.disabled = true;
 
   try {
     await apiFetch(API_ENDPOINTS.returns(loanId), {
-      method: 'PATCH',
-      body: JSON.stringify({ estado_libro: condition.value })
+      method: 'POST',
+      body: JSON.stringify({ libros: booksToReturn })
     });
-    showMessage(message, 'Devolución registrada. La multa final debe ser confirmada por el backend.', 'success');
+    showMessage(message, 'Devolución registrada correctamente.', 'success');
     await loadLoans();
   } catch (error) {
     button.disabled = false;

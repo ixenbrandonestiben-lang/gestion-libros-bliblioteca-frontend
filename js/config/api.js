@@ -2,12 +2,12 @@ export const API_BASE_URL = 'http://localhost:3000/api/v1';
 
 export const API_ENDPOINTS = Object.freeze({
   login: 'auth/login',
-  register: 'auth/registro',
+  register: 'auth/register',
   logout: 'auth/logout',
-  profile: 'auth/perfil',
+  profile: 'auth/me',
   books: 'libros',
   loans: 'prestamos',
-  myLoans: 'prestamos/mis-prestamos',
+  myLoans: 'prestamos',
   returns: (loanId) => `prestamos/${encodeURIComponent(loanId)}/devolucion`,
   sales: 'ventas'
 });
@@ -24,6 +24,14 @@ export class ApiError extends Error {
 export async function apiFetch(path, options = {}) {
   const endpoint = String(path).replace(/^\/+/, '');
   const headers = new Headers(options.headers);
+  const storedSession = sessionStorage.getItem('biblioteca-villa-session');
+
+  if (storedSession) {
+    const session = JSON.parse(storedSession);
+    if (session?.token && !headers.has('Authorization')) {
+      headers.set('Authorization', `Bearer ${session.token}`);
+    }
+  }
 
   if (!headers.has('Accept')) {
     headers.set('Accept', 'application/json');
@@ -37,8 +45,7 @@ export async function apiFetch(path, options = {}) {
 
   const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
     ...options,
-    headers,
-    credentials: 'include'
+    headers
   });
 
   let data = null;

@@ -43,7 +43,7 @@ function renderChart(sales) {
     bar.style.height = `${Math.max((amount / maxAmount) * 100, 4)}%`;
     bar.setAttribute('role', 'img');
     bar.setAttribute('aria-label', `Venta por Q ${amount.toFixed(2)}`);
-    const caption = createElement('span', 'grafico-etiqueta', sale.fecha ?? `Venta ${index + 1}`);
+    const caption = createElement('span', 'grafico-etiqueta', sale.fecha_venta ?? sale.fecha ?? `Venta ${index + 1}`);
     const value = createElement('span', 'grafico-valor', `Q ${amount.toFixed(2)}`);
     column.append(value, bar, caption);
     chart.append(column);
@@ -75,7 +75,7 @@ async function loadDashboard() {
   }
 
   if (loanResult.status === 'fulfilled') {
-    const activeLoans = loanResult.value.filter((loan) => !['DEVUELTO', 'CERRADO'].includes(String(loan.estado).toUpperCase()));
+    const activeLoans = loanResult.value.filter((loan) => !['DEVUELTO', 'CERRADO'].includes(String(loan.estado_prestamo).toUpperCase()));
     fragment.append(renderMetric('Préstamos activos', activeLoans.length, `${loanResult.value.length} registros consultados`));
   } else {
     issues.push('préstamos');

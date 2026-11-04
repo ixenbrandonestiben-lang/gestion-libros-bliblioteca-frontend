@@ -15,6 +15,10 @@
         <h1 id="pos-title">Punto de venta</h1>
         <p class="texto-secundario">Busca libros, arma el carrito y procesa la venta.</p>
         <p class="mensaje" data-pos-message role="alert" hidden></p>
+        <label class="campo" for="pos-client-id">
+          ID del cliente
+          <input id="pos-client-id" data-sale-client type="number" min="1" step="1" required>
+        </label>
         <div class="pos-layout">
           <section aria-labelledby="pos-search-title">
             <h2 id="pos-search-title">Buscar libros</h2>

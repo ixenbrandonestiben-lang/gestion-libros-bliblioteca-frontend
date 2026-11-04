@@ -18,8 +18,8 @@ form?.addEventListener('submit', async (event) => {
 
   const formData = new FormData(form);
   const credentials = {
-    email: String(formData.get('email')).trim(),
-    password: String(formData.get('password'))
+    correo: String(formData.get('email')).trim(),
+    contrasena: String(formData.get('password'))
   };
 
   try {
@@ -28,7 +28,7 @@ form?.addEventListener('submit', async (event) => {
       body: JSON.stringify(credentials)
     });
     const user = getUserFromResponse(response);
-    const session = saveSession(user);
+    const session = saveSession(user, response?.data?.token);
     window.location.assign(getRoleHome(session.role));
   } catch (error) {
     if (error.data?.codigo === 'CLIENTE_EN_MORA' || error.data?.en_mora === true) {
