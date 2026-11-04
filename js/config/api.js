@@ -1,5 +1,17 @@
 export const API_BASE_URL = 'http://localhost:3000/api/v1';
 
+export const API_ENDPOINTS = Object.freeze({
+  login: 'auth/login',
+  register: 'auth/registro',
+  logout: 'auth/logout',
+  profile: 'auth/perfil',
+  books: 'libros',
+  loans: 'prestamos',
+  myLoans: 'prestamos/mis-prestamos',
+  returns: (loanId) => `prestamos/${encodeURIComponent(loanId)}/devolucion`,
+  sales: 'ventas'
+});
+
 export class ApiError extends Error {
   constructor(message, status, data) {
     super(message);
