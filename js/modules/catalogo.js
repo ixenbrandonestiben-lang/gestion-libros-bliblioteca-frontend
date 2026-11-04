@@ -1,4 +1,5 @@
 import { apiFetch } from '../config/api.js';
+import { unwrapList } from '../utils/dom.js';
 
 const form = document.querySelector('[data-catalog-filter]');
 const searchInput = document.querySelector('#catalogo-busqueda');
@@ -7,22 +8,6 @@ const status = document.querySelector('[data-catalog-status]');
 
 let debounceTimer;
 let activeRequest;
-
-function getBooks(response) {
-  if (Array.isArray(response)) {
-    return response;
-  }
-
-  if (response && Array.isArray(response.libros)) {
-    return response.libros;
-  }
-
-  if (response && Array.isArray(response.data)) {
-    return response.data;
-  }
-
-  throw new Error('La API respondió, pero no devolvió una lista de libros válida.');
-}
 
 function addDetail(list, label, value) {
   if (value === undefined || value === null || value === '') {
@@ -136,7 +121,7 @@ async function loadBooks(query = '') {
       return;
     }
 
-    renderBooks(getBooks(response));
+    renderBooks(unwrapList(response, ['libros', 'books']));
   } catch (error) {
     showError(error);
   } finally {
