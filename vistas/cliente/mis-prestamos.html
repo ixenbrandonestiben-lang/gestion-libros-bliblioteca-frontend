@@ -3,8 +3,51 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mis préstamos | Biblioteca Villa</title>
+    <meta name="theme-color" content="#244b3e">
+    <meta name="description" content="Sigue el recorrido de tus libros y tus próximas devoluciones.">
+    <title>Mis viajes lectores | Biblioteca Villa</title>
+    <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/utils/auth-guard.js" data-required-roles="CLIENTE_REGULAR,CLIENTE_PREMIUM" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
   </head>
   <body>
+    <header class="encabezado" data-app-header></header>
+    <main>
+      <section class="page-hero" aria-labelledby="loans-title">
+        <div>
+          <p class="eyebrow">Tus lecturas van de viaje</p>
+          <h1 id="loans-title">Cada libro deja una pequeña huella.</h1>
+          <p>Mira qué historias están contigo y cuándo vuelven a casa.</p>
+        </div>
+        <span class="hero-mark" aria-hidden="true">✦</span>
+      </section>
+
+      <section aria-label="Historial de préstamos">
+        <div class="catalog-toolbar">
+          <label class="campo filtro-lista" for="mis-prestamos-filtro">
+            Buscar en esta página
+            <input id="mis-prestamos-filtro" type="search" data-loan-filter placeholder="Busca un título o número…" autocomplete="off">
+          </label>
+          <span class="pill" data-my-loan-count>Preparando tu historial…</span>
+        </div>
+        <p class="catalogo-estado" data-loan-status role="status" aria-live="polite">Cargando tus préstamos…</p>
+        <div class="resource-grid" data-my-loans aria-busy="true"></div>
+        <div class="pagination" data-my-loan-pagination hidden>
+          <button class="boton boton--secundario boton--pequeno" type="button" data-previous-page>← Anteriores</button>
+          <p data-page-status></p>
+          <button class="boton boton--secundario boton--pequeno" type="button" data-next-page>Siguientes →</button>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="dialogo-detalle" data-my-loan-dialog aria-labelledby="my-loan-dialog-title">
+      <div class="section-heading">
+        <h2 id="my-loan-dialog-title">Tu recorrido lector</h2>
+        <button class="boton-icono" type="button" data-close-my-loan aria-label="Cerrar recorrido">×</button>
+      </div>
+      <div data-my-loan-detail></div>
+    </dialog>
+
+    <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="../../js/modules/mis-prestamos.js"></script>
   </body>
 </html>

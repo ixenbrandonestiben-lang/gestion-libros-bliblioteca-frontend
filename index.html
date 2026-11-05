@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#244b3e">
+    <meta name="description" content="Biblioteca Villa: un lugar para encontrarse con historias nuevas.">
+    <title>Biblioteca Villa | Un lugar entre líneas</title>
+    <link rel="stylesheet" href="./css/estilos.css">
+  </head>
+  <body>
+    <main class="landing-shell">
+      <header class="landing-top">
+        <a class="marca" href="./index.html" aria-label="Biblioteca Villa, inicio">
+          <span class="marca-sello" aria-hidden="true">B</span>
+          <span>Biblioteca Villa</span>
+        </a>
+        <nav class="landing-nav" aria-label="Acceso">
+          <a href="./vistas/cliente/catalogo.html">Explorar catálogo</a>
+          <a class="boton boton--secundario boton--pequeno" href="./vistas/auth/login.html">Iniciar sesión</a>
+        </nav>
+      </header>
+
+      <section class="landing-hero" aria-labelledby="landing-title">
+        <div class="landing-copy">
+          <p class="eyebrow">Un lugar entre líneas</p>
+          <h1 id="landing-title">Hay un mundo nuevo <span>en la próxima página.</span></h1>
+          <p>Una biblioteca para descubrir, detenerse un rato y llevarse una historia a casa.</p>
+          <div class="landing-actions">
+            <a class="boton boton--coral" href="./vistas/cliente/catalogo.html">Descubrir la colección <span aria-hidden="true">↗</span></a>
+            <a class="landing-signup" href="./vistas/auth/registro.html">Crear mi rincón lector</a>
+          </div>
+          <p class="landing-note"><span class="status-dot" aria-hidden="true"></span><span data-library-status>Preparando una sorpresa de la estantería…</span></p>
+        </div>
+
+        <aside class="landing-art" aria-label="Recomendación de la biblioteca">
+          <span class="landing-orbit landing-orbit--one" aria-hidden="true"></span>
+          <span class="landing-orbit landing-orbit--two" aria-hidden="true"></span>
+          <article class="landing-book" data-spotlight>
+            <span class="landing-book__stamp">ELECCIÓN<br>DE LA CASA</span>
+            <span class="landing-book__glyph" aria-hidden="true">✳</span>
+            <h2 data-spotlight-title>Una historia espera.</h2>
+            <p data-spotlight-author>La próxima favorita podría ser esta.</p>
+            <span class="landing-book__footer">BIBLIOTECA VILLA · UN LUGAR ENTRE LÍNEAS</span>
+          </article>
+          <span class="landing-spark landing-spark--lime" aria-hidden="true">✳</span>
+          <span class="landing-spark landing-spark--coral" aria-hidden="true">✦</span>
+          <span class="landing-spark landing-spark--lilac" aria-hidden="true">✳</span>
+        </aside>
+      </section>
+
+      <footer class="landing-footer">
+        <span>Leer es otra forma de viajar.</span>
+        <span data-collection-count>Historias para todos los días.</span>
+      </footer>
+    </main>
+    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/modules/landing.js"></script>
+  </body>
+</html>

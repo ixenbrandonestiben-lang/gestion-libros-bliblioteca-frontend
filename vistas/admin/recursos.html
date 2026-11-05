@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#244b3e">
+    <meta name="description" content="Un espacio vivo para cuidar el catálogo y la comunidad de Biblioteca Villa.">
+    <title>Estantería | Biblioteca Villa</title>
+    <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/utils/auth-guard.js" data-required-roles="ADMIN,BIBLIOTECARIO" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
+  </head>
+  <body>
+    <header class="encabezado" data-app-header></header>
+    <main>
+      <section class="page-hero" aria-labelledby="resources-title">
+        <div>
+          <p class="eyebrow">El taller de la biblioteca</p>
+          <h1 id="resources-title">Cada historia encuentra su lugar.</h1>
+          <p>Cuida los títulos, descubre nuevas voces y mantén la colección respirando.</p>
+        </div>
+        <span class="hero-mark" aria-hidden="true">B</span>
+      </section>
+
+      <section aria-label="Administrar recursos">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Estantería viva</p>
+            <h2 data-resource-heading>La colección</h2>
+          </div>
+          <span class="pill" data-resource-count>Conectando…</span>
+        </div>
+        <nav class="admin-tabs" data-resource-tabs aria-label="Secciones de gestión">
+          <button class="admin-tab" type="button" data-resource-tab="books" aria-selected="true">Libros</button>
+          <button class="admin-tab" type="button" data-resource-tab="authors" aria-selected="false">Autores</button>
+          <button class="admin-tab" type="button" data-resource-tab="publishers" aria-selected="false">Editoriales</button>
+          <button class="admin-tab" type="button" data-resource-tab="genres" aria-selected="false">Géneros</button>
+          <button class="admin-tab" type="button" data-resource-tab="clients" aria-selected="false" data-admin-only hidden>Lectores</button>
+          <button class="admin-tab" type="button" data-resource-tab="staff" aria-selected="false" data-admin-only hidden>Equipo</button>
+        </nav>
+        <div class="toolbar">
+          <label class="campo" for="resource-search">
+            Buscar en esta sección
+            <input id="resource-search" type="search" data-resource-search placeholder="Escribe para filtrar…" autocomplete="off">
+          </label>
+          <button class="boton boton--coral" type="button" data-create-resource>＋ Añadir</button>
+        </div>
+        <p class="catalogo-estado" data-resource-status role="status" aria-live="polite">Cargando colección…</p>
+        <div class="resource-grid" data-resource-list aria-busy="true"></div>
+      </section>
+    </main>
+
+    <dialog class="resource-dialog" data-resource-dialog aria-labelledby="resource-dialog-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Biblioteca Villa</p>
+          <h2 id="resource-dialog-title">Nuevo registro</h2>
+        </div>
+        <button class="boton-icono" type="button" data-close-resource aria-label="Cerrar ventana">×</button>
+      </div>
+      <p class="texto-secundario" data-resource-dialog-help></p>
+      <form class="record-form" data-resource-form></form>
+    </dialog>
+
+    <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="../../js/modules/recursos.js"></script>
+  </body>
+</html>

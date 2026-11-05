@@ -3,8 +3,50 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#244b3e">
+    <meta name="description" content="Entra a Biblioteca Villa y encuentra un libro que te cambie el día.">
     <title>Iniciar sesión | Biblioteca Villa</title>
+    <link rel="stylesheet" href="../../css/estilos.css">
   </head>
   <body>
+    <main class="auth-page">
+      <aside class="auth-art" aria-label="Bienvenida a Biblioteca Villa">
+        <a class="auth-brand" href="../../index.html">
+          <span class="auth-brand-mark" aria-hidden="true">B</span>
+          Biblioteca Villa
+        </a>
+        <div class="auth-art-copy">
+          <p class="eyebrow">Un lugar entre líneas</p>
+          <h1>Tu próxima historia ya te está buscando.</h1>
+          <p>Entra, respira y deja que una página nueva te encuentre.</p>
+        </div>
+        <p class="auth-quote">«Hay libros que son ventanas, y libros que son espejos.»</p>
+      </aside>
+      <section class="auth-form-side" aria-labelledby="login-title">
+        <div class="auth-card">
+          <p class="eyebrow">Qué gusto verte</p>
+          <h2 id="login-title">Volvamos a encontrarnos.</h2>
+          <p class="texto-secundario">Inicia sesión con tu cuenta de la biblioteca.</p>
+          <p class="mensaje" data-form-message role="alert" hidden></p>
+          <form class="formulario" data-login-form>
+            <label class="campo" for="login-email">
+              Correo electrónico
+              <input id="login-email" name="email" type="email" autocomplete="username" placeholder="tu@correo.com" required>
+            </label>
+            <label class="campo" for="login-password">
+              Contraseña
+              <span class="password-control">
+                <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+                <button class="password-toggle" type="button" data-toggle-password aria-label="Mostrar contraseña" aria-pressed="false">Ver</button>
+              </span>
+            </label>
+            <button class="boton boton--coral" type="submit">Entrar a mi biblioteca <span aria-hidden="true">↗</span></button>
+          </form>
+          <p class="auth-alternativa">¿Aún no tienes cuenta? <a href="./registro.html">Hagamos espacio.</a></p>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="../../js/modules/login.js"></script>
   </body>
 </html>

@@ -3,8 +3,64 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Punto de venta | Biblioteca Villa</title>
+    <meta name="theme-color" content="#244b3e">
+    <meta name="description" content="Un mostrador ágil, una compra cuidada y un nuevo lector.">
+    <title>El mostrador | Biblioteca Villa</title>
+    <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/utils/auth-guard.js" data-required-roles="ADMIN,BIBLIOTECARIO" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
   </head>
   <body>
+    <header class="encabezado" data-app-header></header>
+    <main>
+      <section class="page-hero" aria-labelledby="pos-title">
+        <div>
+          <p class="eyebrow">El mostrador de las buenas historias</p>
+          <h1 id="pos-title">Prepara una nueva aventura.</h1>
+          <p>Encuentra los títulos, arma la bolsa y deja que la biblioteca cierre la cuenta.</p>
+        </div>
+        <span class="hero-mark" aria-hidden="true">↗</span>
+      </section>
+
+      <section aria-label="Venta de libros">
+        <p class="mensaje" data-pos-message role="alert" hidden></p>
+        <div class="pos-layout">
+          <div class="pos-search-panel">
+            <label class="campo" for="pos-client-id">
+              ID del lector
+              <input id="pos-client-id" data-sale-client type="number" min="1" step="1" placeholder="Número de cuenta del lector" required>
+              <small>El precio definitivo y las existencias siempre se confirman en el servidor.</small>
+            </label>
+            <h2>¿Qué título está buscando?</h2>
+            <form class="catalogo-busqueda" data-pos-search role="search">
+              <label class="campo" for="pos-query">
+                Título o ISBN
+                <input id="pos-query" type="search" autocomplete="off" placeholder="Escribe para encontrarlo…">
+              </label>
+              <button class="boton boton--secundario" type="submit">Buscar</button>
+            </form>
+            <p class="catalogo-estado" data-pos-search-status role="status" aria-live="polite"></p>
+            <div class="lista-tarjetas" data-pos-books aria-busy="false"></div>
+          </div>
+
+          <aside class="carrito" aria-labelledby="cart-title">
+            <p class="eyebrow">Cesta de lectura</p>
+            <h2 id="cart-title">Tu selección.</h2>
+            <p class="catalogo-estado" data-cart-empty>Agrega títulos para empezar.</p>
+            <ul class="carrito-lista" data-cart-items></ul>
+            <p class="carrito-total">Total de referencia <strong data-cart-total>Q 0.00</strong></p>
+            <p class="carrito-disclaimer">El total del recibo lo confirma la biblioteca.</p>
+            <button class="boton boton--coral" type="button" data-process-sale disabled>Confirmar venta ↗</button>
+          </aside>
+        </div>
+      </section>
+    </main>
+    <dialog class="dialogo-recibo" data-receipt-dialog aria-labelledby="receipt-title">
+      <p class="eyebrow">Una nueva historia encontró hogar</p>
+      <h2 id="receipt-title">Venta confirmada.</h2>
+      <div data-receipt-content></div>
+      <button class="boton" type="button" data-close-receipt>Listo</button>
+    </dialog>
+    <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="../../js/modules/pos.js"></script>
   </body>
 </html>

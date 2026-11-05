@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#244b3e">
+    <meta name="description" content="Tu rincón personal en Biblioteca Villa.">
+    <title>Mi rincón | Biblioteca Villa</title>
+    <link rel="stylesheet" href="../../css/estilos.css">
+    <script src="../../js/utils/auth-guard.js" data-required-roles="CLIENTE_REGULAR,CLIENTE_PREMIUM" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
+  </head>
+  <body>
+    <header class="encabezado" data-app-header></header>
+    <main>
+      <section class="page-hero" aria-labelledby="perfil-title">
+        <div>
+          <p class="eyebrow">Un libro, una pausa, un lugar tuyo</p>
+          <h1 id="perfil-title">Tu rincón lector.</h1>
+          <p>Un resumen de la cuenta que abre la puerta a tus historias favoritas.</p>
+        </div>
+        <span class="hero-mark" aria-hidden="true">B</span>
+      </section>
+
+      <section aria-label="Tu perfil lector">
+        <p class="catalogo-estado" data-profile-status role="status" aria-live="polite">Preparando tu rincón…</p>
+        <div class="profile-layout" aria-busy="true">
+          <article class="profile-identity">
+            <span class="profile-monogram" data-profile-monogram aria-hidden="true">B</span>
+            <h2 data-profile-name>Tu perfil</h2>
+            <p class="texto-secundario" data-profile-role></p>
+          </article>
+          <dl class="profile-data" data-profile></dl>
+        </div>
+      </section>
+      <section class="panel profile-next">
+        <div>
+          <p class="eyebrow">¿Con ganas de empezar otra?</p>
+          <h2>Una nueva historia te espera.</h2>
+        </div>
+        <a class="boton boton--coral" href="./catalogo.html">Explorar la colección ↗</a>
+      </section>
+    </main>
+    <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="../../js/modules/perfil.js"></script>
+  </body>
+</html>
