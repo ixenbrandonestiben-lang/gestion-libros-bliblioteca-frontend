@@ -5,29 +5,31 @@ bundlers ni dependencias de terceros. La experiencia mezcla una paleta editorial
 de bosque, coral, lila y lima con portadas generadas con CSS, estantería de
 favoritos, búsqueda instantánea y fichas dinámicas.
 
-## Ejecutar en local
+## Ejecutar y conectar la aplicación
 
-1. Configura MySQL y el `.env` del repositorio backend.
-2. Desde el backend, ejecuta `npm start`. La configuración local de este
-   proyecto usa `http://localhost:3001`.
-3. Sirve esta carpeta con Live Server en VS Code o con cualquier servidor
-   estático. No abras los HTML con `file://`.
-4. Abre `index.html`. El inicio presenta una recomendación que cambia cada día
-   y permite entrar al catálogo público sin iniciar sesión.
+La aplicación usa por defecto la API desplegada en
+`https://gestion-libros-bliblioteca-backend.onrender.com/api/v1`. La URL del
+repositorio GitHub contiene el código, pero no es un servidor de API.
 
-El backend debe permitir el origen donde sirve el frontend en `CORS_ORIGINS`.
-El middleware incluye `http://localhost:5500` y `http://127.0.0.1:5500` en su
-configuración de desarrollo. Consulta el README del backend para iniciar sesión
-con una cuenta de personal y configurar el primer administrador.
+Sirve esta carpeta con Live Server en VS Code o con cualquier servidor estático;
+no abras los HTML con `file://`. Abre `index.html` para explorar el catálogo
+público o inicia sesión para usar las funciones de la biblioteca.
 
-Si la API está en otro origen, define `window.BIBLIOTECA_API_URL` antes de los
-módulos frontend, por ejemplo:
+Para trabajar con una instancia local, inicia MySQL y el backend con `npm start`.
+En el backend, configura `SERVER_PORT=3001` y permite el origen del frontend en
+`CORS_ORIGINS`. Después, antes de los módulos de la página, define la URL local:
 
-```html
-<script>window.BIBLIOTECA_API_URL = 'https://api.ejemplo.com/api/v1';</script>
+```js
+window.BIBLIOTECA_API_URL = 'http://localhost:3001/api/v1';
 ```
 
-La URL predeterminada está centralizada en `js/config/api.js`.
+La URL activa se centraliza en `js/config/api.js`; cualquier valor de
+`window.BIBLIOTECA_API_URL` la reemplaza. Para probar el frontend local contra
+Render, agrega `http://localhost:5500` y `http://127.0.0.1:5500` a
+`CORS_ORIGINS` en la configuración del backend. Al desplegar el frontend,
+agrega también su origen público exacto (por ejemplo, `https://usuario.github.io`).
+Si ya existe `CORS_ORIGINS` en Render, conserva los demás orígenes que necesites
+en esa lista separada por comas. No incluyas una barra final en los orígenes.
 
 ## Mapa de la aplicación
 
