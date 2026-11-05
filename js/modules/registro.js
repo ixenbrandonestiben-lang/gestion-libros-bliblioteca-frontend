@@ -22,6 +22,8 @@ form?.addEventListener('submit', async (event) => {
 
   const submitButton = form.querySelector('[type="submit"]');
   submitButton.disabled = true;
+  const originalLabel = submitButton.textContent;
+  submitButton.textContent = 'Creando tu rincón…';
 
   const telefono = String(formData.get('telefono')).trim();
   const payload = {
@@ -45,5 +47,17 @@ form?.addEventListener('submit', async (event) => {
     showMessage(message, error.message || 'No se pudo completar el registro.', 'error');
   } finally {
     submitButton.disabled = false;
+    submitButton.textContent = originalLabel;
   }
 });
+
+for (const toggle of document.querySelectorAll('[data-toggle-password]')) {
+  toggle.addEventListener('click', () => {
+    const input = toggle.closest('.password-control').querySelector('input');
+    const visible = input.type === 'password';
+    input.type = visible ? 'text' : 'password';
+    toggle.textContent = visible ? 'Ocultar' : 'Ver';
+    toggle.setAttribute('aria-label', visible ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    toggle.setAttribute('aria-pressed', String(visible));
+  });
+}

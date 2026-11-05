@@ -5,6 +5,17 @@ import { clearMessage, showMessage } from '../utils/dom.js';
 const form = document.querySelector('[data-login-form]');
 const message = document.querySelector('[data-form-message]');
 
+for (const toggle of document.querySelectorAll('[data-toggle-password]')) {
+  toggle.addEventListener('click', () => {
+    const input = toggle.closest('.password-control').querySelector('input');
+    const visible = input.type === 'password';
+    input.type = visible ? 'text' : 'password';
+    toggle.textContent = visible ? 'Ocultar' : 'Ver';
+    toggle.setAttribute('aria-label', visible ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    toggle.setAttribute('aria-pressed', String(visible));
+  });
+}
+
 form?.addEventListener('submit', async (event) => {
   event.preventDefault();
   clearMessage(message);
@@ -15,6 +26,8 @@ form?.addEventListener('submit', async (event) => {
 
   const submitButton = form.querySelector('[type="submit"]');
   submitButton.disabled = true;
+  const originalLabel = submitButton.textContent;
+  submitButton.textContent = 'Abriendo tu biblioteca…';
 
   const formData = new FormData(form);
   const credentials = {
@@ -31,11 +44,12 @@ form?.addEventListener('submit', async (event) => {
     const session = saveSession(user, response?.data?.token);
     window.location.assign(getRoleHome(session.role));
   } catch (error) {
-    if (error.data?.codigo === 'CLIENTE_EN_MORA' || error.data?.en_mora === true) {
-      showMessage(message, error.message || 'Tu cuenta tiene préstamos vencidos. Contacta a la biblioteca.', 'error');
-    } else {
-      showMessage(message, error.message || 'No se pudo iniciar sesión. Inténtalo nuevamente.', 'error');
-    }
+    showMessage(message, error.message || 'No se pudo iniciar sesión. Inténtalo nuevamente.', 'error');
+    submitButton.textContent = originalLabel;
     submitButton.disabled = false;
   }
 });
+
+if (new URLSearchParams(window.location.search).has('logout')) {
+  showMessage(message, 'Tu sesión se cerró en este dispositivo.', 'success');
+}

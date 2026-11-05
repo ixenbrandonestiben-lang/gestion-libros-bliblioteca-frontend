@@ -1,5 +1,5 @@
 import { API_ENDPOINTS, apiFetch } from '../config/api.js';
-import { createElement, showMessage, unwrapList } from '../utils/dom.js';
+import { createElement, formatMoney, showMessage, unwrapList } from '../utils/dom.js';
 
 const searchForm = document.querySelector('[data-pos-search]');
 const searchInput = document.querySelector('#pos-query');
@@ -16,8 +16,6 @@ const receiptContent = document.querySelector('[data-receipt-content]');
 
 const cart = new Map();
 let books = [];
-let searchTimer;
-let activeSearch;
 let currentQuery = '';
 
 function getBookId(book) {
@@ -27,10 +25,6 @@ function getBookId(book) {
 function getBookPrice(book) {
   const price = Number(book.precio_venta ?? book.precio ?? book.price);
   return Number.isFinite(price) && price >= 0 ? price : null;
-}
-
-function formatMoney(value) {
-  return new Intl.NumberFormat('es-GT', { style: 'currency', currency: 'GTQ' }).format(value);
 }
 
 function renderBooks() {
@@ -68,32 +62,15 @@ function renderBooks() {
   bookResults.setAttribute('aria-busy', 'false');
 }
 
-async function searchBooks(query = '') {
-  activeSearch?.abort();
-  const request = new AbortController();
-  activeSearch = request;
-  currentQuery = query.trim();
+async function loadBooks() {
   bookResults.setAttribute('aria-busy', 'true');
-  searchStatus.textContent = 'Buscando libros...';
-
-  const params = new URLSearchParams();
-  if (query) {
-    params.set('q', query);
-  }
+  searchStatus.textContent = 'Preparando el catálogo…';
 
   try {
-    const path = params.size ? `${API_ENDPOINTS.books}?${params}` : API_ENDPOINTS.books;
-    const response = await apiFetch(path, { signal: request.signal });
-    if (request.signal.aborted) {
-      return;
-    }
-
+    const response = await apiFetch(API_ENDPOINTS.books);
     books = unwrapList(response, ['libros', 'books']);
     renderBooks();
   } catch (error) {
-    if (error.name === 'AbortError') {
-      return;
-    }
     bookResults.replaceChildren();
     bookResults.setAttribute('aria-busy', 'false');
     searchStatus.textContent = error.message || 'No se pudieron consultar los libros.';
@@ -195,13 +172,13 @@ function renderReceipt(items, total, response) {
 
 searchForm?.addEventListener('submit', (event) => {
   event.preventDefault();
-  window.clearTimeout(searchTimer);
-  searchBooks(searchInput.value.trim());
+  currentQuery = searchInput.value.trim();
+  renderBooks();
 });
 
 searchInput?.addEventListener('input', () => {
-  window.clearTimeout(searchTimer);
-  searchTimer = window.setTimeout(() => searchBooks(searchInput.value.trim()), 300);
+  currentQuery = searchInput.value.trim();
+  renderBooks();
 });
 
 bookResults?.addEventListener('click', (event) => {
@@ -247,6 +224,8 @@ processButton?.addEventListener('click', async () => {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   processButton.disabled = true;
   message.hidden = true;
+  const originalLabel = processButton.textContent;
+  processButton.textContent = 'Cerrando la venta…';
 
   try {
     const response = await apiFetch(API_ENDPOINTS.sales, {
@@ -259,10 +238,13 @@ processButton?.addEventListener('click', async () => {
     cart.clear();
     renderCart();
     renderReceipt(items, total, response);
+    showMessage(message, 'Venta registrada. El recibo muestra el total confirmado por la biblioteca.', 'success');
+    await loadBooks();
   } catch (error) {
     showMessage(message, error.message || 'No se pudo procesar la venta.', 'error');
   } finally {
     renderCart();
+    processButton.textContent = originalLabel;
   }
 });
 
@@ -270,4 +252,4 @@ saleClientInput?.addEventListener('input', renderCart);
 document.querySelector('[data-close-receipt]')?.addEventListener('click', () => receiptDialog.close());
 
 renderCart();
-searchBooks();
+loadBooks();
