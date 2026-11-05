@@ -3,40 +3,66 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Catálogo | Biblioteca Villa</title>
+    <meta name="theme-color" content="#244b3e">
+    <meta name="description" content="Descubre tu próxima lectura en la colección de Biblioteca Villa.">
+    <title>Explora | Biblioteca Villa</title>
     <link rel="stylesheet" href="../../css/estilos.css">
-    <script src="../../js/utils/auth-guard.js" data-required-roles="CLIENTE,CLIENTE_REGULAR,CLIENTE_PREMIUM" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
   </head>
   <body>
     <header class="encabezado" data-app-header></header>
     <main class="catalogo">
-      <section aria-labelledby="catalogo-titulo">
-        <h1 id="catalogo-titulo">Catálogo de libros</h1>
-        <p>Explora los títulos disponibles en la biblioteca.</p>
+      <section class="page-hero" aria-labelledby="catalogo-titulo">
+        <div>
+          <p class="eyebrow">Tu próxima historia está aquí</p>
+          <h1 id="catalogo-titulo">Un mundo entero cabe en una estantería.</h1>
+          <p>Busca por título, autor o ISBN. Guarda las portadas que te hagan ojitos.</p>
+        </div>
+        <span class="hero-mark" aria-hidden="true">B</span>
+      </section>
 
-        <form class="catalogo-busqueda" data-catalog-filter role="search">
+      <section aria-label="Explorar la colección">
+        <div class="catalogo-toolbar">
           <label class="campo" for="catalogo-busqueda">
-            Buscar por título, autor o ISBN
-            <input
-              id="catalogo-busqueda"
-              name="q"
-              type="search"
-              autocomplete="off"
-              placeholder="Escribe para buscar..."
-            >
+            Encuentra tu próxima lectura
+            <input id="catalogo-busqueda" type="search" data-catalog-search placeholder="Título, autora, ISBN…" autocomplete="off">
           </label>
-          <button class="boton boton--secundario" type="submit">Buscar</button>
-        </form>
-
-        <p class="aviso-api">
-          La vista está preparada para consultar <code>GET /api/v1/libros</code>.
-          El endpoint del backend aún debe implementarse y probarse.
-        </p>
-        <p class="catalogo-estado" data-catalog-status role="status" aria-live="polite"></p>
-        <p class="mensaje" data-global-message role="alert" hidden></p>
-        <div class="catalogo-libros" data-catalog-results aria-busy="false"></div>
+          <label class="campo" for="catalogo-orden">
+            Ordenar por
+            <select id="catalogo-orden" data-catalog-sort>
+              <option value="title">A - Z</option>
+              <option value="price-low">Precio: menor primero</option>
+              <option value="price-high">Precio: mayor primero</option>
+              <option value="stock">Más ejemplares</option>
+            </select>
+          </label>
+          <button class="boton boton--secundario" type="button" data-show-saved aria-pressed="false">
+            ♡ <span data-saved-label>Mi estantería</span>
+          </button>
+        </div>
+        <nav class="filter-chip-list" data-genre-filters aria-label="Filtrar por género"></nav>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Hecho para perder la noción del tiempo</p>
+            <h2>La colección, a tu manera.</h2>
+          </div>
+          <span class="pill" data-catalog-count>Preparando la estantería…</span>
+        </div>
+        <p class="catalogo-estado" data-catalog-status role="status" aria-live="polite">Buscando libros…</p>
+        <div class="book-grid" data-catalog-results aria-busy="true"></div>
       </section>
     </main>
+
+    <dialog class="dialogo-detalle" data-book-dialog aria-labelledby="book-dialog-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Una historia en potencia</p>
+          <h2 id="book-dialog-title">Ficha del libro</h2>
+        </div>
+        <button class="boton-icono" type="button" data-close-book aria-label="Cerrar ficha">×</button>
+      </div>
+      <div data-book-detail></div>
+    </dialog>
+
     <script type="module" src="../../js/main.js"></script>
     <script type="module" src="../../js/modules/catalogo.js"></script>
   </body>
