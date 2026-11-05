@@ -50,8 +50,11 @@ export function saveSession(user, token) {
 }
 
 export async function endSession() {
-  await apiFetch(API_ENDPOINTS.logout, { method: 'POST' });
-  sessionStorage.removeItem(SESSION_KEY);
+  try {
+    await apiFetch(API_ENDPOINTS.logout, { method: 'POST' });
+  } finally {
+    sessionStorage.removeItem(SESSION_KEY);
+  }
 }
 
 export function getUserFromResponse(response) {

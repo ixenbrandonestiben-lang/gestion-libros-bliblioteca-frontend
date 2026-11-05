@@ -29,7 +29,8 @@ export function initializeTheme() {
 
   const updateButton = () => {
     const isDark = getActiveTheme() === 'dark';
-    button.textContent = isDark ? 'Usar tema claro' : 'Usar tema oscuro';
+    button.textContent = isDark ? '☼  Tema claro' : '◐  Tema noche';
+    button.setAttribute('aria-label', isDark ? 'Cambiar al tema claro' : 'Cambiar al tema oscuro');
     button.setAttribute('aria-pressed', String(isDark));
   };
 
