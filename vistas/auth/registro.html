@@ -3,50 +3,69 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registro | Biblioteca Villa</title>
+    <meta name="theme-color" content="#244b3e">
+    <meta name="description" content="Crea tu rincón lector en Biblioteca Villa.">
+    <title>Crear cuenta | Biblioteca Villa</title>
     <link rel="stylesheet" href="../../css/estilos.css">
   </head>
   <body>
-    <main class="auth-layout">
-      <section class="tarjeta auth-card" aria-labelledby="registro-title">
-        <p class="eyebrow">Biblioteca Villa</p>
-        <h1 id="registro-title">Crear cuenta</h1>
-        <p class="texto-secundario">Completa tus datos para registrarte como cliente.</p>
-        <p class="mensaje" data-form-message role="alert" hidden></p>
-        <form class="formulario" data-register-form>
-          <div class="formulario-dos-columnas">
-            <label class="campo" for="registro-dpi">
-              DPI
-              <input id="registro-dpi" name="dpi" autocomplete="off" maxlength="20" required>
+    <main class="auth-page auth-page--register">
+      <aside class="auth-art" aria-label="Una invitación a leer">
+        <a class="auth-brand" href="../../index.html">
+          <span class="auth-brand-mark" aria-hidden="true">B</span>
+          Biblioteca Villa
+        </a>
+        <div class="auth-art-copy">
+          <p class="eyebrow">Un capítulo nuevo</p>
+          <h1>Las mejores aventuras empiezan con una página.</h1>
+          <p>Crea tu cuenta y encuentra un rincón que se sienta tuyo.</p>
+        </div>
+        <p class="auth-quote">Una comunidad curiosa, lectora y siempre abierta.</p>
+      </aside>
+      <section class="auth-form-side" aria-labelledby="registro-title">
+        <div class="auth-card">
+          <p class="eyebrow">Bienvenida, bienvenida</p>
+          <h2 id="registro-title">Abramos tu cuenta.</h2>
+          <p class="texto-secundario">Regístrate como lector. Tus datos se guardan de forma segura.</p>
+          <p class="mensaje" data-form-message role="alert" hidden></p>
+          <form class="formulario" data-register-form>
+            <div class="auth-form-grid">
+              <label class="campo" for="registro-dpi">
+                DPI
+                <input id="registro-dpi" name="dpi" autocomplete="off" maxlength="20" required>
+              </label>
+              <label class="campo" for="registro-nombre">
+                Nombre
+                <input id="registro-nombre" name="nombre" autocomplete="given-name" maxlength="100" required>
+              </label>
+              <label class="campo" for="registro-apellido">
+                Apellido
+                <input id="registro-apellido" name="apellido" autocomplete="family-name" maxlength="100" required>
+              </label>
+              <label class="campo" for="registro-telefono">
+                Teléfono <small>Opcional</small>
+                <input id="registro-telefono" name="telefono" type="tel" autocomplete="tel" maxlength="20">
+              </label>
+            </div>
+            <label class="campo" for="registro-email">
+              Correo electrónico
+              <input id="registro-email" name="email" type="email" autocomplete="email" maxlength="250" placeholder="tu@correo.com" required>
             </label>
-            <label class="campo" for="registro-nombre">
-              Nombre
-              <input id="registro-nombre" name="nombre" autocomplete="given-name" required>
+            <label class="campo" for="registro-password">
+              Contraseña <small>Al menos 8 caracteres</small>
+              <span class="password-control">
+                <input id="registro-password" name="password" type="password" minlength="8" maxlength="72" autocomplete="new-password" required>
+                <button class="password-toggle" type="button" data-toggle-password aria-label="Mostrar contraseña" aria-pressed="false">Ver</button>
+              </span>
             </label>
-            <label class="campo" for="registro-apellido">
-              Apellido
-              <input id="registro-apellido" name="apellido" autocomplete="family-name" required>
+            <label class="campo" for="registro-password-confirmation">
+              Confirmar contraseña
+              <input id="registro-password-confirmation" name="password-confirmation" type="password" minlength="8" maxlength="72" autocomplete="new-password" required>
             </label>
-          </div>
-          <label class="campo" for="registro-email">
-            Correo electrónico
-            <input id="registro-email" name="email" type="email" autocomplete="email" required>
-          </label>
-          <label class="campo" for="registro-telefono">
-            Teléfono
-            <input id="registro-telefono" name="telefono" type="tel" autocomplete="tel">
-          </label>
-          <label class="campo" for="registro-password">
-            Contraseña
-            <input id="registro-password" name="password" type="password" minlength="8" autocomplete="new-password" required>
-          </label>
-          <label class="campo" for="registro-password-confirmation">
-            Confirmar contraseña
-            <input id="registro-password-confirmation" name="password-confirmation" type="password" minlength="8" autocomplete="new-password" required>
-          </label>
-          <button class="boton" type="submit">Crear cuenta</button>
-        </form>
-        <p class="auth-alternativa">¿Ya tienes cuenta? <a href="./login.html">Inicia sesión</a></p>
+            <button class="boton boton--coral" type="submit">Crear mi cuenta <span aria-hidden="true">↗</span></button>
+          </form>
+          <p class="auth-alternativa">¿Ya eres parte? <a href="./login.html">Volvamos a encontrarnos.</a></p>
+        </div>
       </section>
     </main>
     <script type="module" src="../../js/main.js"></script>
