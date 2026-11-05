@@ -3,27 +3,53 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Panel de administración | Biblioteca Villa</title>
+    <meta name="theme-color" content="#244b3e">
+    <meta name="description" content="El pulso diario de Biblioteca Villa.">
+    <title>Panorama | Biblioteca Villa</title>
     <link rel="stylesheet" href="../../css/estilos.css">
-    <script src="../../js/utils/auth-guard.js" data-required-roles="ADMIN,ADMINISTRADOR,BIBLIOTECARIO" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
+    <script src="../../js/utils/auth-guard.js" data-required-roles="ADMIN,BIBLIOTECARIO" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
   </head>
   <body>
     <header class="encabezado" data-app-header></header>
     <main>
-      <section aria-labelledby="dashboard-title">
-        <p class="eyebrow">Administración</p>
-        <h1 id="dashboard-title">Resumen de la biblioteca</h1>
-        <p class="texto-secundario">Indicadores calculados a partir de los datos disponibles en la API.</p>
-        <p class="mensaje" data-global-message role="alert" hidden></p>
-        <p class="catalogo-estado" data-dashboard-status role="status" aria-live="polite">Consultando la API...</p>
+      <section class="page-hero" aria-labelledby="dashboard-title">
+        <div>
+          <p class="eyebrow">El pulso de hoy</p>
+          <h1 id="dashboard-title">Las historias siguen moviéndose.</h1>
+          <p>Un vistazo a la colección, los préstamos y la vida detrás del mostrador.</p>
+        </div>
+        <span class="hero-mark" aria-hidden="true">✳</span>
+      </section>
+
+      <section aria-label="Actividad de la biblioteca">
+        <p class="catalogo-estado" data-dashboard-status role="status" aria-live="polite">Consultando la biblioteca…</p>
         <div class="metricas-grid" data-dashboard-metrics aria-busy="true"></div>
       </section>
+
       <section class="seccion-dashboard" aria-labelledby="ventas-title">
-        <h2 id="ventas-title">Ventas recientes</h2>
-        <p class="catalogo-estado" data-sales-chart-status role="status">Cargando ventas...</p>
-        <div class="grafico-barras" data-sales-chart aria-label="Gráfico de ventas recientes"></div>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Caja en movimiento</p>
+            <h2 id="ventas-title">Las últimas historias que encontraron dueño.</h2>
+          </div>
+          <a class="boton boton--secundario boton--pequeno" href="./pos.html">Abrir caja ↗</a>
+        </div>
+        <p class="catalogo-estado" data-sales-chart-status role="status">Cargando ventas recientes…</p>
+        <div class="grafico-panel">
+          <div class="grafico-barras" data-sales-chart aria-label="Gráfico de las seis ventas más recientes"></div>
+          <div class="resource-grid" data-recent-sales aria-live="polite"></div>
+        </div>
       </section>
     </main>
+
+    <dialog class="dialogo-recibo" data-sale-dialog aria-labelledby="sale-title">
+      <div class="section-heading">
+        <h2 id="sale-title" data-sale-title>Recibo</h2>
+        <button class="boton-icono" type="button" data-close-sale aria-label="Cerrar recibo">×</button>
+      </div>
+      <div data-sale-detail></div>
+    </dialog>
+
     <script type="module" src="../../js/main.js"></script>
     <script type="module" src="../../js/modules/dashboard.js"></script>
   </body>

@@ -3,45 +3,83 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gestión de préstamos | Biblioteca Villa</title>
+    <meta name="theme-color" content="#244b3e">
+    <meta name="description" content="Acompaña cada préstamo desde la salida hasta su regreso a casa.">
+    <title>Préstamos | Biblioteca Villa</title>
     <link rel="stylesheet" href="../../css/estilos.css">
-    <script src="../../js/utils/auth-guard.js" data-required-roles="ADMIN,ADMINISTRADOR,BIBLIOTECARIO" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
+    <script src="../../js/utils/auth-guard.js" data-required-roles="ADMIN,BIBLIOTECARIO" data-login-url="../auth/login.html" data-forbidden-url="../../errors/403.html"></script>
   </head>
   <body>
     <header class="encabezado" data-app-header></header>
     <main>
-      <section aria-labelledby="gestion-title">
-        <p class="eyebrow">Biblioteca</p>
-        <h1 id="gestion-title">Gestión de préstamos</h1>
-        <p class="texto-secundario">Registra préstamos y procesa devoluciones.</p>
-        <p class="mensaje" data-loan-message role="alert" hidden></p>
+      <section class="page-hero" aria-labelledby="loans-title">
+        <div>
+          <p class="eyebrow">Una historia también vuelve</p>
+          <h1 id="loans-title">Cuida cada viaje de ida y vuelta.</h1>
+          <p>Prepara préstamos, revisa su recorrido y recibe los libros de vuelta en la colección.</p>
+        </div>
+        <span class="hero-mark" aria-hidden="true">↗</span>
       </section>
 
-      <section class="tarjeta seccion-formulario" aria-labelledby="nuevo-prestamo-title">
-        <h2 id="nuevo-prestamo-title">Registrar préstamo</h2>
-        <form class="formulario formulario-dos-columnas" data-create-loan>
-          <label class="campo" for="loan-client-id">
-            ID del cliente
-            <input id="loan-client-id" name="id_cliente" type="number" min="1" step="1" required>
-          </label>
-          <label class="campo" for="loan-book-id">
-            ID del libro
-            <input id="loan-book-id" name="id_libro" type="number" min="1" step="1" required>
-          </label>
-          <label class="campo" for="loan-due-date">
-            Fecha de devolución prevista
-            <input id="loan-due-date" name="fecha_devolucion_esperada" type="date" required>
-          </label>
-          <button class="boton" type="submit">Crear préstamo</button>
+      <section class="panel loan-create-panel" aria-labelledby="new-loan-title">
+        <div>
+          <p class="eyebrow">Salida de libros</p>
+          <h2 id="new-loan-title">Preparar un préstamo</h2>
+        </div>
+        <p class="mensaje" data-loan-message role="alert" hidden></p>
+        <form class="record-form" data-create-loan>
+          <div class="record-form__grid">
+            <label class="campo" for="loan-client-id">
+              ID del lector
+              <input id="loan-client-id" name="id_cliente" type="number" min="1" step="1" placeholder="Número de cuenta" required>
+              <small>El número de cuenta aparece en la ficha del lector.</small>
+            </label>
+            <label class="campo" for="loan-due-date">
+              Fecha de devolución prevista
+              <input id="loan-due-date" name="fecha_devolucion_esperada" type="date" required>
+            </label>
+            <label class="campo" for="loan-books">
+              Libros para este viaje
+              <select id="loan-books" data-loan-books multiple size="5" required aria-describedby="loan-books-help"></select>
+              <small id="loan-books-help">Puedes elegir varios títulos. Usa Ctrl o Cmd para marcar más de uno.</small>
+            </label>
+            <div class="loan-create-note">
+              <span class="status-dot" aria-hidden="true"></span>
+              <p>El inventario se actualiza al confirmar. Los préstamos vencidos se revisan automáticamente.</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="boton boton--coral" type="submit">Entregar libros ↗</button>
+          </div>
         </form>
       </section>
 
-      <section class="seccion-dashboard" aria-labelledby="loans-title">
-        <h2 id="loans-title">Préstamos registrados</h2>
-        <p class="catalogo-estado" data-admin-loans-status role="status" aria-live="polite">Cargando préstamos...</p>
-        <div class="lista-tarjetas" data-admin-loans aria-busy="true"></div>
+      <section aria-labelledby="loan-list-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">En movimiento</p>
+            <h2 id="loan-list-title">El recorrido de los libros.</h2>
+          </div>
+          <span class="pill" data-loan-count>Consultando…</span>
+        </div>
+        <p class="catalogo-estado" data-admin-loans-status role="status" aria-live="polite">Cargando préstamos…</p>
+        <div class="resource-grid" data-admin-loans aria-busy="true"></div>
+        <div class="pagination" data-loan-pagination hidden>
+          <button class="boton boton--secundario boton--pequeno" type="button" data-loan-previous>← Anteriores</button>
+          <p data-loan-page-status></p>
+          <button class="boton boton--secundario boton--pequeno" type="button" data-loan-next>Siguientes →</button>
+        </div>
       </section>
     </main>
+
+    <dialog class="dialogo-detalle" data-loan-dialog aria-labelledby="loan-dialog-title">
+      <div class="section-heading">
+        <h2 id="loan-dialog-title">Recorrido del préstamo</h2>
+        <button class="boton-icono" type="button" data-close-loan aria-label="Cerrar recorrido">×</button>
+      </div>
+      <div data-loan-detail></div>
+    </dialog>
+
     <script type="module" src="../../js/main.js"></script>
     <script type="module" src="../../js/modules/prestamos.js"></script>
   </body>
